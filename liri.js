@@ -1,4 +1,6 @@
 require("dotenv").config();
+// run "npm install axios" in this folder first!
+var axios = require("axios");
 var moment = require('moment');
 var Spotify = require('node-spotify-api');
 var keys = require("./keys.js");
@@ -34,30 +36,37 @@ switch (userCommand) {
 
 // check if userCommand is "concert-this"
 function concertThis() {
-  // run "npm install axios" in this folder first!
-  var axios = require("axios");
   // run an API call using axios to the bands-in-town API
   // inject the user's search term in the queryURL
   var artist = userSearchTerm;
   var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
   console.log(queryUrl);
-  var concertInfo = axios.get(queryUrl).then(function (response) {
+  axios.get(queryUrl).then(function (response) {
     // Display name of venue, venue location, and the date of the event 
     for (let i = 0; i < response.data.length; i++) {
       console.log("\nName of the venue: " + response.data[i].venue.name);
-      console.log("Venue location: " + response.data[i].venue.city + ", " +response.data[i].venue.country);
+      console.log("Venue location: " + response.data[i].venue.city + ", " + response.data[i].venue.country);
       // Format the date of the event to be MM/DD/YYYY (look at the moment node package documentation!)
-      // npm install moment --save
-      console.log("Date of the Event: " + response.data[i].datetime.format("MM/DD/YYYY"));
+      // npm i moment
+      console.log("Date of the Event: " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
     };
+  }).catch(function (error) {
+    console.log(error.config);
   });
 };
 
 // check if userCommand is "spotify-this-song"
 function spotifyThisSong() {
-
-
   // Using Spotify Node package info and documentation, make a call to the Spotify API using the user's search term
+  var songName = userSearchTerm;
+  spotify.search({ type: 'track', query: songName }, function (err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+    console.log(data);
+  });
+
+
 
   // Display to the user:
   // * Artist(s)
@@ -70,26 +79,39 @@ function spotifyThisSong() {
 
 // check if userCommand is "movie-this"
 function movieThis() {
-  
-
   // Use Axios to call the OMDB API using the user's search term. Use activities 17 and 18 as a reference!
+  var movieName = userSearchTerm;
+  var queryURL = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+  console.log(queryURL);
+  axios.get(queryURL).then(function (response) {
+    // Display to the user:
+    // * Title of the movie.
+    console.log("Title of the movie: " + response.data.Title);
+    // * Year the movie came out.
+    console.log("Release Year: " + response.data.Year);
+    // * IMDB Rating of the movie.
+    console.log("IMDB Rating: " + response.data.Rated);
+    // * Rotten Tomatoes Rating of the movie.
+    console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
+    // * Country where the movie was produced.
+    console.log("Country: "+ response.data.Country);
+    // * Language of the movie.
+    console.log("Language: "+ response.data.Language);
+    // * Plot of the movie.
+    console.log("Plot: "+ response.data.Plot);
+    // * Actors in the movie.
+    console.log("Actors: "+ response.data.Actors);
+  }).catch(function (error) {
+    console.log(error.config);
+  });
 
-  // Display to the user:
-  // * Title of the movie.
-  // * Year the movie came out.
-  // * IMDB Rating of the movie.
-  // * Rotten Tomatoes Rating of the movie.
-  // * Country where the movie was produced.
-  // * Language of the movie.
-  // * Plot of the movie.
-  // * Actors in the movie.
 
   // Provide a default search if the user didn't provide an argument.
 };
 
 // check if userCommand is "do-what-it-says" (DO THIS PART OF THE ASSIGNMENT ONLY IF THE OTHER THREE API CALLS WORK WELL!)
 function doWhatItSays() {
-  
+
 
   // Use "fs" to read the random.txt file (hint, you will need to require fs! Look at activities 12 and 13)
   // The command will be whatever is before the comma. The search term will be whatever is after the comma.
