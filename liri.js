@@ -80,7 +80,12 @@ function spotifyThisSong() {
 // check if userCommand is "movie-this"
 function movieThis() {
   // Use Axios to call the OMDB API using the user's search term. Use activities 17 and 18 as a reference!
-  var movieName = userSearchTerm;
+  if (userSearchTerm) {
+    var movieName = userSearchTerm;
+  } else if (!userSearchTerm) {
+    // Provide a default search if the user didn't provide an argument.
+    var movieName = "Mr+Nobody";
+  }
   var queryURL = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
   console.log(queryURL);
   axios.get(queryURL).then(function (response) {
@@ -94,19 +99,16 @@ function movieThis() {
     // * Rotten Tomatoes Rating of the movie.
     console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
     // * Country where the movie was produced.
-    console.log("Country: "+ response.data.Country);
+    console.log("Country: " + response.data.Country);
     // * Language of the movie.
-    console.log("Language: "+ response.data.Language);
+    console.log("Language: " + response.data.Language);
     // * Plot of the movie.
-    console.log("Plot: "+ response.data.Plot);
+    console.log("Plot: " + response.data.Plot);
     // * Actors in the movie.
-    console.log("Actors: "+ response.data.Actors);
+    console.log("Actors: " + response.data.Actors);
   }).catch(function (error) {
     console.log(error.config);
   });
-
-
-  // Provide a default search if the user didn't provide an argument.
 };
 
 // check if userCommand is "do-what-it-says" (DO THIS PART OF THE ASSIGNMENT ONLY IF THE OTHER THREE API CALLS WORK WELL!)
