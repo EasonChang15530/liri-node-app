@@ -72,17 +72,19 @@ function spotifyThisSong() {
       return console.log('Error occurred: ' + err);
     }
     for (let i = 0; i < data.tracks.items.length; i++) {
-
+      // Display to the user:
+      // * Artist(s)
+      // in case of this song has more than one artists
       for (let j = 0; j < data.tracks.items[i].artists.length; j++) {
-        // Display to the user:
-        // * Artist(s)
-        console.log(data.tracks.items[i].artists[j].name);
-        console.log("---------------------------");
-        // * The song's name
-        // * A preview link of the song from Spotify
-        // * The album that the song is from
-
+        console.log("Artist(s) is(are): " + data.tracks.items[i].artists[j].name);
       };
+      console.log("-------------------");
+      // * The song's name
+      console.log("The song's name: " + data.tracks.items[i].name);
+      // * A preview link of the song from Spotify
+      console.log("The link of the song: " + data.tracks.items[i].external_urls.spotify);
+      // * The album that the song is from
+      console.log("The album name: " + data.tracks.items[i].album.name + "\n");
     };
   });
   // Provide a default searchTerm if the user didn't provide an argument
