@@ -17,7 +17,7 @@ var userCommand = process.argv[2];
 var userSearchTerm = process.argv.slice(3).join("+");
 console.log(userSearchTerm);
 // Make a switch statement for the four commands. The default case should tell the user to try again.
-function runCommand(command) {  
+function runCommand(command) {
   switch (command) {
     case "concert-this":
       concertThis();
@@ -66,11 +66,18 @@ function concertThis() {
 // check if userCommand is "spotify-this-song"
 function spotifyThisSong() {
   // Using Spotify Node package info and documentation, make a call to the Spotify API using the user's search term
-  var songName = userSearchTerm;
+  if (userSearchTerm) {
+    var songName = userSearchTerm;
+  } else if (!userSearchTerm) {
+    // Provide a default searchTerm if the user didn't provide an argument
+    var songName = "The+Sign";
+  };
   spotify.search({ type: 'track', query: songName }, function (err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
+    // console.log(data);
+    console.log(data.tracks.items);
     for (let i = 0; i < data.tracks.items.length; i++) {
       // Display to the user:
       // * Artist(s)
@@ -87,7 +94,6 @@ function spotifyThisSong() {
       console.log("The album name: " + data.tracks.items[i].album.name + "\n");
     };
   });
-  // Provide a default searchTerm if the user didn't provide an argument
 };
 
 // check if userCommand is "movie-this"
@@ -138,8 +144,8 @@ function doWhatItSays() {
     // Make the corresponding API call depending on what the command is.
     userSearchTerm = dataArr[1].replace(" ", "+");
     runCommand(dataArr[0]);
-  
-  });  
+
+  });
 };
 
 // If the user doesn't provide 1 of the 4 recognizable commands, display message to the user to try again
