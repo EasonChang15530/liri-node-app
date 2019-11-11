@@ -1,10 +1,15 @@
+// run "npm i dotenv" in this folder!
 require("dotenv").config();
-// run "npm install axios" in this folder first!
+// run "npm i axios" in this folder!
 var axios = require("axios");
+// run "npm i moment" in this folder!
 var moment = require('moment');
+// run "npm i node-spotify-api" in this folder!
 var Spotify = require('node-spotify-api');
 var keys = require("./keys.js");
 spotify = new Spotify(keys.spotify);
+// Built in fs module.
+var fs = require("fs");
 
 // capture the command that the user puts in (process.argv[2])
 var userCommand = process.argv[2];
@@ -12,27 +17,30 @@ var userCommand = process.argv[2];
 var userSearchTerm = process.argv.slice(3).join("+");
 console.log(userSearchTerm);
 // Make a switch statement for the four commands. The default case should tell the user to try again.
-switch (userCommand) {
-  case "concert-this":
-    concertThis();
-    break;
+function runCommand(command) {  
+  switch (command) {
+    case "concert-this":
+      concertThis();
+      break;
 
-  case "spotify-this-song":
-    spotifyThisSong();
-    break;
+    case "spotify-this-song":
+      spotifyThisSong();
+      break;
 
-  case "movie-this":
-    movieThis();
-    break;
+    case "movie-this":
+      movieThis();
+      break;
 
-  case "do-what-it-says":
-    doWhatItSays();
-    break;
+    case "do-what-it-says":
+      doWhatItSays();
+      break;
 
-  default:
-    canNotRecognize();
-    break;
-}
+    default:
+      canNotRecognize();
+      break;
+  };
+};
+runCommand(userCommand);
 
 // check if userCommand is "concert-this"
 function concertThis() {
@@ -63,17 +71,20 @@ function spotifyThisSong() {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
-    console.log(data);
+    for (let i = 0; i < data.tracks.items.length; i++) {
+
+      for (let j = 0; j < data.tracks.items[i].artists.length; j++) {
+        // Display to the user:
+        // * Artist(s)
+        console.log(data.tracks.items[i].artists[j].name);
+        console.log("---------------------------");
+        // * The song's name
+        // * A preview link of the song from Spotify
+        // * The album that the song is from
+
+      };
+    };
   });
-
-
-
-  // Display to the user:
-  // * Artist(s)
-  // * The song's name
-  // * A preview link of the song from Spotify
-  // * The album that the song is from
-
   // Provide a default searchTerm if the user didn't provide an argument
 };
 
@@ -113,11 +124,20 @@ function movieThis() {
 
 // check if userCommand is "do-what-it-says" (DO THIS PART OF THE ASSIGNMENT ONLY IF THE OTHER THREE API CALLS WORK WELL!)
 function doWhatItSays() {
-
-
   // Use "fs" to read the random.txt file (hint, you will need to require fs! Look at activities 12 and 13)
-  // The command will be whatever is before the comma. The search term will be whatever is after the comma.
-  // Make the corresponding API call depending on what the command is.
+  fs.readFile("random.txt", "utf8", function (error, data) {
+    if (error) {
+      return console.log(error);
+    };
+    console.log(data);
+    var dataArr = data.split(",");
+    console.log(dataArr);
+    // The command will be whatever is before the comma. The search term will be whatever is after the comma.
+    // Make the corresponding API call depending on what the command is.
+    userSearchTerm = dataArr[1].replace(" ", "+");
+    runCommand(dataArr[0]);
+  
+  });  
 };
 
 // If the user doesn't provide 1 of the 4 recognizable commands, display message to the user to try again
