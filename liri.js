@@ -77,7 +77,7 @@ function spotifyThisSong() {
       return console.log('Error occurred: ' + err);
     }
     // console.log(data);
-    console.log(data.tracks.items);
+    // console.log(data.tracks.items);
     for (let i = 0; i < data.tracks.items.length; i++) {
       // Display to the user:
       // * Artist(s)
